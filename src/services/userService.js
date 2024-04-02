@@ -15,16 +15,16 @@ let handleUserLogin = (email, password) => {
                 });
                 if (user) {
                     //compare password
-                    let check = bcrypt.compare(password, user.password);
+                    let check =  await bcrypt.compareSync(password, user.password);
                     if (check) {
-                        userData.errCode = 0;
+                        userData.errCode = 1;
                         userData.errMessage = "OK nha";
                         
                         delete user.password;
                         userData.user = user;
                     } else {
-                        userData.errCode = 3;
-                        userData.errMessage = "Sai mat khau nha";
+                        userData.errCode = 0;
+                        userData.errMessage = 'Sai mat khau nha';
                     }
                 } else {
                     userData.errCode = 2;
@@ -58,6 +58,33 @@ let checkUserEmail = (userEmail) => {
     })
 }
 
+let getAllUsers = (userId) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            let users = 'abc';
+            if (userId === 'ALL') {
+                users = await db.User.findAll({
+                    attributes: {
+                        exclude: ['password']
+                    }
+                })
+            } 
+            if(userId && userId !== 'ALL') {
+                users = await db.User.findOne({
+                    where: {id : userId},
+                    attributes: {
+                        exclude: ['password']
+                    }
+                })
+            }
+            resolve(users)
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 module.exports = {
-    handleUserLogin : handleUserLogin
+    handleUserLogin : handleUserLogin,
+    getAllUsers : getAllUsers
 }
