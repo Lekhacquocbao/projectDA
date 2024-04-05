@@ -114,6 +114,7 @@ let createNewUser = (data) => {
                     lastName: data.lastName,
                     email: data.email,
                     password: hashPasswordFromBcrypt,
+                    
                     address: data.address,
                     phoneNumber: data.phoneNumber,
                     gender: data.gender === '1' ? true : false,
